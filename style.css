@@ -196,12 +196,12 @@ form input:valid ~ button{
     visibility: hidden;
     transition: all 0.3s ease;
 }
-//We will show this in the JavaScript
-/*.popup-box.show{
+/* //We will show this in the JavaScript */
+.popup-box.show{
     opacity: 1;
     visibility: visible;
     transform: translate(-50%, -50%) scale(1);
-}*/
+}
 
   .info-box .error {
     color: #0f5753;

@@ -17,14 +17,15 @@
 </head>
 
 <style>
-  .blur-effect{
+  .blur-effect {
     position: absolute;
     height: 100%;
     width: 100%;
     backdrop-filter: blur(12px);
-    background: rgba(0,0,0,0.01);
+    background: rgba(0, 0, 0, 0.01);
     display: none;
-}
+  }
+
   .popup-box {
     position: absolute;
     background: #fff;
@@ -39,13 +40,14 @@
     opacity: 0;
     display: none;
     transition: all 0.3s ease;
-}
-//We will show this in the JavaScript
-.popup-box.show {
+  }
+
+  /* //We will show this in the JavaScript */
+  .popup-box.show {
     opacity: 1 !important;
     display: block;
     transform: translate(-50%, -50%) scale(1) !important;
-}
+  }
 
   .info-box .error {
     color: #0f5753;
@@ -172,7 +174,7 @@
       Your Short Link is ready. You can also edit your link now but can't edit once saved.</div>
     <form action="">
       <label>Edit Shorten URL</label>
-      <input type="text" spellcheck="false" value="example.com/xyz123">
+      <input type="text" spellcheck="false" value="">
       <i class="fa-solid fa-copy copy-icon"></i>
       <button>Save</button>
     </form>
