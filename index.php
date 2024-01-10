@@ -60,12 +60,10 @@ if (isset($_GET['u'])) {
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
     transform: translate(-50%, -50%) scale(0.9);
     opacity: 0;
-    display: none;
     transition: all 0.3s ease;
-  }
-
-  /* //We will show this in the JavaScript */
-  .popup-box.show {
+}
+//We will show this in the JavaScript
+.popup-box.show {
     opacity: 1 !important;
     display: block;
     transform: translate(-50%, -50%) scale(1) !important;

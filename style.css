@@ -196,7 +196,8 @@ form input:valid ~ button{
     visibility: hidden;
     transition: all 0.3s ease;
 }
-/* //We will show this in the JavaScript */
+/* We will show this in the JavaScript */
+
 .popup-box.show{
     opacity: 1;
     visibility: visible;
