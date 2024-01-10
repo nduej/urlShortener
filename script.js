@@ -24,9 +24,8 @@ shortenBtn.onclick = ()=>{
                 popupBox.classList.add("show");
                 
 
-                let domain = "localhost/url/";
+                let domain = "localhost/url/?u=";
                 shortenURL.value = domain + data;
-                console.log(domain + data);
             }else{
                 alert(data);
             }

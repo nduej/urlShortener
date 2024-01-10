@@ -1,3 +1,21 @@
+<!--Let's redirect user to their original link using shorten link -->
+<?php
+if (isset($_GET['u'])) {
+  include "php/config.php";
+  $u = mysqli_real_escape_string($conn, $_GET['u']);
+
+  //Getting the full url of that short url which we are getting from url
+  $sql = mysqli_query($conn, "SELECT full_url FROM url WHERE shorten_url = '{$u}'");
+  if(mysqli_num_rows($sql) > 0){
+    //Let's redirect user
+    $full_url = mysqli_fetch_assoc($sql);
+    header("Location:".$full_url['full_url']);
+  }
+}
+
+?>
+
+
 <!doctype html>
 <html lang="en">
 
@@ -17,6 +35,10 @@
 </head>
 
 <style>
+  form {
+    position: relative;
+  }
+
   .blur-effect {
     position: absolute;
     height: 100%;
