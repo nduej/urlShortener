@@ -1,4 +1,6 @@
 //Selecting all Required Elements
+const copyToClipBoard = document.getElementById("copyInput");
+const saveToolTip = document.getElementById("copyIcon")
 
 const form = document.querySelector(".wrapper form"),
 fullURL = form.querySelector("input"),
@@ -7,6 +9,7 @@ blurEffect  = document.querySelector(".blur-effect"),
 popupBox  = document.getElementById("popup-box"),
 shortenURL  = popupBox.querySelector("input");
 
+const hash = window.location.search.substring(6)
 
 form.onsubmit = (e)=>{
     e.preventDefault(); //Preventing form from submitting
@@ -23,7 +26,7 @@ shortenBtn.onclick = ()=>{
                 blurEffect.style.display = "block";
                 popupBox.classList.add("show");
                 
-                let domain = "localhost/url/?u=";
+                let domain = "localhost/urlShortener/?hash=";
                 shortenURL.value = domain + data;
             }else{
                 alert(data);
@@ -34,3 +37,38 @@ shortenBtn.onclick = ()=>{
     let formData = new FormData(form); //Creating new FormData Object
     xhr.send(formData); //Sending form value to Php
 }
+
+saveToolTip.onclick = () => {
+    copyToClipBoard.select();
+    copyToClipBoard.setSelectionRange(0,9999);
+
+    navigator.clipboard.writeText(copyToClipBoard.value);
+
+    saveToolTip.innerHTML = "Copied"
+}
+
+console.log(hash)
+
+function getStringFromHash(hash) {
+    fetch("php/url-control.php?hash=" + hash, {
+        method: 'GET'
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.text();
+        })
+        .then(data => {
+            window.location.href = data;
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+}
+
+if(hash != ""){
+    getStringFromHash(hash);
+}
+// getStringFromHash('d5a94');
+
