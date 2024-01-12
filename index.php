@@ -1,15 +1,20 @@
 <!--Let's redirect user to their original link using shorten link -->
 <?php
-if (isset($_GET['u'])) {
-  include "php/config.php";
-  $u = mysqli_real_escape_string($conn, $_GET['u']);
+include "php/config.php";
+$new_url = "";
+if (isset($_GET)) {
+  foreach ($_GET as $key => $val) {
+    $u = mysqli_real_escape_string($conn, $key);
+    $new_url = str_replace('/', '', $u); //Removing / sign from URL
+  }
 
-  //Getting the full url of that short url which we are getting from url
-  $sql = mysqli_query($conn, "SELECT full_url FROM url WHERE shorten_url = '{$u}'");
-  if(mysqli_num_rows($sql) > 0){
+  // Getting the full url of that short url which we are getting from url
+  $sql = mysqli_query($conn, "SELECT full_url FROM url WHERE shorten_url = '{$new_url}'");
+
+  if (mysqli_num_rows($sql) > 0) {
     //Let's redirect user
     $full_url = mysqli_fetch_assoc($sql);
-    header("Location:".$full_url['full_url']);
+    header("Location:" . $full_url['full_url']);
   }
 }
 
@@ -61,9 +66,10 @@ if (isset($_GET['u'])) {
     transform: translate(-50%, -50%) scale(0.9);
     opacity: 0;
     transition: all 0.3s ease;
-}
-//We will show this in the JavaScript
-.popup-box.show {
+  }
+
+  //We will show this in the JavaScript
+  .popup-box.show {
     opacity: 1 !important;
     display: block;
     transform: translate(-50%, -50%) scale(1) !important;
@@ -128,61 +134,64 @@ if (isset($_GET['u'])) {
       <i class="fa-solid fa-link url-icon"></i>
       <button>Shorten</button>
     </form>
-    <div class="count">
-      <span>Total Links: <span>10</span> & Total Clicks: <span>140</span></span>
-      <a href="#">Clear All</a>
-    </div>
-    <div class="urls-area">
-      <div class="title">
-        <li>Shorten URL</li>
-        <li>Original URL</li>
-        <li>Clicks</li>
-        <li>Action</li>
-      </div>
-      <div class="data">
-        <li><a href="#">example.com/xyz123</a></li>
-        <li>https://www.vsicxpress.com</li>
-        <li>16</li>
-        <li><a href="#">Delete</a></li>
-      </div>
-      <div class="data">
-        <li><a href="#">example.com/xyz123</a></li>
-        <li>https://www.vsicxpress.com</li>
-        <li>16</li>
-        <li><a href="#">Delete</a></li>
-      </div>
-      <div class="data">
-        <li><a href="#">example.com/xyz123</a></li>
-        <li>https://www.vsicxpress.com</li>
-        <li>16</li>
-        <li><a href="#">Delete</a></li>
-      </div>
-      <div class="data">
-        <li><a href="#">example.com/xyz123</a></li>
-        <li>https://www.vsicxpress.com</li>
-        <li>16</li>
-        <li><a href="#">Delete</a></li>
-      </div>
-      <div class="data">
-        <li><a href="#">example.com/xyz123</a></li>
-        <li>https://www.vsicxpress.com</li>
-        <li>16</li>
-        <li><a href="#">Delete</a></li>
-      </div>
-      <div class="data">
-        <li><a href="#">example.com/xyz123</a></li>
-        <li>https://www.vsicxpress.com</li>
-        <li>16</li>
-        <li><a href="#">Delete</a></li>
-      </div>
-      <div class="data">
-        <li><a href="#">example.com/xyz123</a></li>
-        <li>https://www.vsicxpress.com</li>
-        <li>16</li>
-        <li><a href="#">Delete</a></li>
+
+    <?php
+
+    $sql2 = mysqli_query($conn, "SELECT * FROM url ORDER BY id DESC");
+    if (mysqli_num_rows($sql2) > 0) {
+      ?>
+      <div class="count">
+        <span>Total Links: <span>10</span> & Total Clicks: <span>140</span></span>
+        <a href="#">Clear All</a>
       </div>
 
+      <div class="urls-area">
+        <div class="title">
+          <li>Shorten URL</li>
+          <li>Original URL</li>
+          <li>Clicks</li>
+          <li>Action</li>
+        </div>
+        <?php
+        while ($row = mysqli_fetch_assoc($sql2)) {
+          ?>
+          <div class="data">
+            <li>
+              <a href="http://localhost/urlShortener/<?php echo $row['shorten_url'];  ?>" target="_blank">
+                <?php
+
+                if ('localhost/urlShortener/' . strlen($row['shorten_url'] > 50)) {
+                  echo 'localhost/urlShortener/' . substr($row['shorten_url'], 0, 50) . '...';
+                } else {
+                  echo 'localhost/urlShortener/' . $row['shorten_url'];
+                }
+
+                ?>
+              </a>
+            </li>
+            <li>
+              <?php
+
+              if (strlen($row['full_url'] > 65)) {
+                echo substr($row['full_url'], 0, 65) . '...';
+              } else {
+                echo $row['full_url'];
+              }
+
+              ?>
+            </li>
+            <li>
+              <?php echo $row['clicks'] ?>
+            </li>
+            <li><a href="#">Delete</a></li>
+          </div>
+          <?php
+        }
+    }
+    ?>
     </div>
+
+
 
   </div>
 
@@ -196,7 +205,7 @@ if (isset($_GET['u'])) {
       <label>Edit Shorten URL</label>
       <input type="text" spellcheck="false" value="">
       <i class="fa-solid fa-copy copy-icon"></i>
-      <button>Save</button>
+      <button id="saveBtn">Save</button>
     </form>
   </div>
 

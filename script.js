@@ -5,7 +5,8 @@ fullURL = form.querySelector("input"),
 shortenBtn  = form.querySelector("button"),
 blurEffect  = document.querySelector(".blur-effect"),
 popupBox  = document.getElementById("popup-box"),
-shortenURL  = popupBox.querySelector("input");
+shortenURL  = popupBox.querySelector("input"),
+saveBtn  = popupBox.querySelector("button");
 
 
 form.onsubmit = (e)=>{
@@ -22,9 +23,15 @@ shortenBtn.onclick = ()=>{
             if(data.length <= 5){
                 blurEffect.style.display = "block";
                 popupBox.classList.add("show");
-                
-                let domain = "localhost/url/?u=";
+
+                let domain = "localhost/urlShortener/";
                 shortenURL.value = domain + data;
+
+                //Let's work on Save Button Click
+                saveBtn.onclick = ()=>{
+                    location.reload(); //reload to current page
+                }
+                
             }else{
                 alert(data);
             }
