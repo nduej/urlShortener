@@ -10,11 +10,15 @@ if (isset($_GET)) {
 
   // Getting the full url of that short url which we are getting from url
   $sql = mysqli_query($conn, "SELECT full_url FROM url WHERE shorten_url = '{$new_url}'");
-
+  
   if (mysqli_num_rows($sql) > 0) {
-    //Let's redirect user
-    $full_url = mysqli_fetch_assoc($sql);
-    header("Location:" . $full_url['full_url']);
+    //Sql to Update number of Clicks
+    $count_query = mysqli_query($conn, "UPDATE url SET clicks = clicks + 1 WHERE shorten_url = '{$new_url}'");
+    if ($count_query) {
+      //Let's redirect user
+      $full_url = mysqli_fetch_assoc($sql);
+      header("Location:" . $full_url['full_url']);
+    }
   }
 }
 
@@ -68,14 +72,13 @@ if (isset($_GET)) {
     transition: all 0.3s ease;
   }
 
-  //We will show this in the JavaScript
   .popup-box.show {
-    opacity: 1 !important;
+    opacity: 1;
     display: block;
     transform: translate(-50%, -50%) scale(1) !important;
   }
 
-  .info-box .error {
+   .popup-box .info-box{
     color: #0f5753;
     background: #bef4f1;
     border: 1px solid #7de8e3;
@@ -83,6 +86,12 @@ if (isset($_GET)) {
     border-radius: 5px;
     font-size: 17px;
     text-align: center;
+  }
+/*We will show this in the JavaScript*/
+  .info-box.error {
+    color: #721c24;
+    background: #f8d7da;
+    border-color: #f5c6cb;
   }
 
   .popup-box form {
@@ -128,7 +137,7 @@ if (isset($_GET)) {
 
 <body class="bg-info">
 
-  <div class="wrapper">
+  <div id="wrapper" class="wrapper">
     <form action="">
       <input type="text" name="full-url" placeholder="Enter or paste a long url" required>
       <i class="fa-solid fa-link url-icon"></i>
@@ -141,8 +150,23 @@ if (isset($_GET)) {
     if (mysqli_num_rows($sql2) > 0) {
       ?>
       <div class="count">
-        <span>Total Links: <span>10</span> & Total Clicks: <span>140</span></span>
-        <a href="#">Clear All</a>
+        <?php
+
+        $sql3 = mysqli_query($conn, "SELECT COUNT(*) FROM url");
+        $res = mysqli_fetch_assoc($sql3);
+
+        $sql4 = mysqli_query($conn, "SELECT clicks FROM url");
+        $total = 0;
+
+        while ($c = mysqli_fetch_assoc($sql4)) {
+          $total = $c['clicks'] + $total;
+        }
+
+        ?>
+        <span>Total Links: <span>
+            <?php echo end($res); //end() function wil return the last key value of associative array  ?>
+          </span> & Total Clicks: <span><?php echo $total; ?></span></span>
+        <a href="php/delete.php?delete=all">Clear All</a>
       </div>
 
       <div class="urls-area">
@@ -157,7 +181,7 @@ if (isset($_GET)) {
           ?>
           <div class="data">
             <li>
-              <a href="http://localhost/urlShortener/<?php echo $row['shorten_url'];  ?>" target="_blank">
+              <a href="http://localhost/urlShortener/<?php echo $row['shorten_url']; ?>" target="_blank">
                 <?php
 
                 if ('localhost/urlShortener/' . strlen($row['shorten_url'] > 50)) {
@@ -183,7 +207,7 @@ if (isset($_GET)) {
             <li>
               <?php echo $row['clicks'] ?>
             </li>
-            <li><a href="#">Delete</a></li>
+            <li><a href="php/delete.php?id=<?php echo $row['shorten_url'] ?>">Delete</a></li>
           </div>
           <?php
         }
@@ -198,13 +222,12 @@ if (isset($_GET)) {
   <div class="blur-effect">
   </div>
   <div id="popup-box" class="popup-box">
-    <div class="info-box error" style="color: #0f5753; background: #bef4f1; border: 1px solid #7de8e3; 
-    padding: 10px; border-radius: 5px; font-size: 17px; text-align: center;">
+    <div  class="info-box">
       Your Short Link is ready. You can also edit your link now but can't edit once saved.</div>
     <form action="">
       <label>Edit Shorten URL</label>
       <input type="text" spellcheck="false" value="">
-      <i class="fa-solid fa-copy copy-icon"></i>
+      <i class="copy-icon fa-solid fa-copy"></i>
       <button id="saveBtn">Save</button>
     </form>
   </div>
